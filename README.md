@@ -19,6 +19,7 @@ This project demonstrates how to run YOLOv8 object detection on a webcam feed us
 - **`load_yolo.py`**: A simple script to verify the YOLOv8 model loads correctly and check for CUDA availability.
 - **`export_onnx.py`**: Exports the standard `yolov8n.pt` model to `yolov8n.onnx` format.
 - **`onnx_to_tensorrt.py`**: Converts the ONNX model into a TensorRT `.engine` file. This is customized for Windows systems where `trtexec` might be missing from the pip installation.
+- **`benchmark.py`**: Compares the raw inference speed of PyTorch vs. TensorRT using dummy data (independently of any webcam limits).
 
 ### 2. Webcam Inference
 - **`webcam_inference_torch.py`**: Runs real-time detection using the standard PyTorch backend.
@@ -28,8 +29,20 @@ This project demonstrates how to run YOLOv8 object detection on a webcam feed us
 
 Both inference scripts include an FPS counter displayed in the top-left corner. 
 
-### Understanding FPS Results:
-- **Webcam Hardware Limit:** Most webcams are hardware-locked at 30 or 60 FPS. If both scripts show a steady 30.00 FPS, it means the hardware is the bottleneck, not the model.
+### Benchmark Results (RTX 2070 SUPER)
+
+Measured using `benchmark.py` over 100 iterations (640x640 input):
+
+| Backend | Latency (ms) | Throughput (FPS) |
+| :--- | :--- | :--- |
+| **PyTorch (CUDA)** | 13.34 ms | 74.98 FPS |
+| **TensorRT** | **6.46 ms** | **154.80 FPS** |
+
+*Result: TensorRT is approximately **2.06x faster** than standard PyTorch on this hardware.*
+
+### Understanding Webcam FPS Limits
+While the raw throughput shows ~155 FPS, most webcams are hardware-locked at 30 or 60 FPS due to hardware limits:
+- **Webcam Bottleneck:** If both scripts show approximately 30.00 FPS, it means the hardware is the bottleneck, not the model.
 - **TensorRT Optimization:** Even if the visible FPS is capped by the camera, TensorRT provides significant benefits:
     - **Lower Latency:** Faster "frame-to-detection" time.
     - **Reduced Resource Usage:** Lower GPU utilization and power consumption for the same workload.
