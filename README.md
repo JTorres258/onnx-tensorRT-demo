@@ -1,6 +1,6 @@
-# YOLOv8 ONNX and TensorRT Inference
+# YOLOv8 Nano ONNX and TensorRT Inference
 
-This project demonstrates how to run YOLOv8 object detection on a webcam feed using different backends: PyTorch (standard), ONNX, and TensorRT for optimized performance on NVIDIA GPUs.
+This project demonstrates how to run YOLOv8 Nano (yolov8n) object detection on a webcam feed using different backends: PyTorch (standard), ONNX, and TensorRT for optimized performance on NVIDIA GPUs.
 
 ## 🚀 Setup
 
@@ -29,16 +29,21 @@ This project demonstrates how to run YOLOv8 object detection on a webcam feed us
 
 Both inference scripts include an FPS counter displayed in the top-left corner. 
 
-### Benchmark Results (RTX 2070 SUPER)
+### Benchmark Results (YOLOv8 Nano on RTX 2070 SUPER)
 
 Measured using `benchmark.py` over 100 iterations (640x640 input):
 
-| Backend | Latency (ms) | Throughput (FPS) |
-| :--- | :--- | :--- |
-| **PyTorch (CUDA)** | 13.34 ms | 74.98 FPS |
-| **TensorRT** | **6.46 ms** | **154.80 FPS** |
+| Backend | Latency (ms) | Throughput (FPS) | Speedup |
+| :--- | :--- | :--- | :--- |
+| **PyTorch (CUDA)** | 11.51 ms | 86.85 FPS | 1.00x |
+| **TensorRT FP32** | 6.07 ms | 164.65 FPS | 1.90x |
+| **TensorRT FP16** | **4.81 ms** | **207.79 FPS** | **2.39x** |
+| **TensorRT INT8** | 4.90 ms | 204.13 FPS | 2.35x |
 
-*Result: TensorRT is approximately **2.06x faster** than standard PyTorch on this hardware.*
+> [!NOTE]
+> **FP16** is the best performer on the RTX 2070 SUPER for YOLOv8n. INT8 did not show additional gains here, which often happens with very small models where the overhead of quantization kernels outweighs the compute savings.
+
+*Result: TensorRT FP16 is approximately **2.4x faster** than standard PyTorch on this hardware.*
 
 ### Understanding Webcam FPS Limits
 While the raw throughput shows ~155 FPS, most webcams are hardware-locked at 30 or 60 FPS due to hardware limits:
