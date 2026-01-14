@@ -2,16 +2,32 @@
 
 This project demonstrates how to run YOLOv8 Nano (yolov8n) object detection on a webcam feed using different backends: PyTorch (standard), ONNX, and TensorRT for optimized performance on NVIDIA GPUs.
 
+## 💻 System Requirements
+
+This project was developed and tested on the following setup:
+- **OS:** Windows 11 (Supports `os.add_dll_directory` for TensorRT)
+- **Python:** 3.12.x
+- **GPU:** NVIDIA GeForce RTX 2070 SUPER
+- **NVIDIA Driver:** 581.57 (or newer)
+- **CUDA:** 12.4 (or compatible higher version)
+- **TensorRT:** 10.x (Installed via `pip`)
+
 ## 🚀 Setup
 
-1. **Activate the Virtual Environment:**
+1. **Create and Activate a Virtual Environment:**
    ```powershell
+   python -m venv .venv
    .\.venv\Scripts\Activate.ps1
    ```
-   *Note: Activation adds TensorRT libraries to your PATH automatically.*
 
 2. **Install Dependencies:**
-   The project requires `ultralytics`, `opencv-python`, `onnx`, `onnxruntime`, and `tensorrt`. Make sure PyTorch is installed with CUDA support for best performance.
+   ```powershell
+   pip install -r requirements.txt
+   ```
+   *Note: This will install the CUDA 12.4 version of PyTorch.*
+
+3. **Environment Configuration:**
+   *Note: Our `onnx_to_tensorrt.py` and inference scripts automatically handle the TensorRT DLL paths, but make sure the `.venv\Lib\site-packages\tensorrt_libs` folder is accessible.*
 
 ## 📂 Project Structure
 
